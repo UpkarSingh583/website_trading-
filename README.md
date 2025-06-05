@@ -1,6 +1,3 @@
-# website_trading-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
