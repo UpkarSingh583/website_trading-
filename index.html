@@ -338,3 +338,234 @@
 
 </body>
 </html>
+
+<!-- Right: Summary Panels -->
+  <div class="summary-panel">
+    <h3>Recruiter Summary</h3>
+    <ul id="recruiterSummary"></ul>
+
+    <h3>Status Summary by Recruiter</h3>
+    <div id="statusSummaryByRecruiter"></div>
+
+    <h3>Monthly Summary By Recruiter</h3>
+    <div id="monthlyByRecruiterContainer"></div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('interviewForm');
+  const tableBody = document.querySelector('#interviewTable tbody');
+  const exportBtn = document.getElementById('exportBtn');
+  const recruiterSummary = document.getElementById('recruiterSummary');
+  const statusSummaryByRecruiter = document.getElementById('statusSummaryByRecruiter');
+  const monthlyByRecruiterContainer = document.getElementById('monthlyByRecruiterContainer');
+
+  let interviews = JSON.parse(localStorage.getItem('interviewData')) || [];
+  let editIndex = null;
+
+  function saveData() {
+    localStorage.setItem('interviewData', JSON.stringify(interviews));
+  }
+
+  function renderSummary() {
+    // Recruiter summary (total counts)
+    const recruiterCounts = interviews.reduce((acc, curr) => {
+      acc[curr.recruiter] = (acc[curr.recruiter] || 0) + 1;
+      return acc;
+    }, {});
+    recruiterSummary.innerHTML = Object.entries(recruiterCounts)
+      .map(([name, count]) => `<li>${name}: ${count}</li>`)
+      .join('') || '<li>No interviews</li>';
+
+    // Status summary by recruiter
+    // Structure: { recruiter: { status: count, ... }, ... }
+    const statusByRecruiter = {};
+    interviews.forEach(({ recruiter, status }) => {
+      if (!recruiter || !status) return;
+      if (!statusByRecruiter[recruiter]) {
+        statusByRecruiter[recruiter] = {};
+      }
+      statusByRecruiter[recruiter][status] = (statusByRecruiter[recruiter][status] || 0) + 1;
+    });
+
+    statusSummaryByRecruiter.innerHTML = '';
+
+    if (Object.keys(statusByRecruiter).length === 0) {
+      statusSummaryByRecruiter.innerHTML = '<p>No interviews</p>';
+    } else {
+      for (const [recruiter, statuses] of Object.entries(statusByRecruiter)) {
+        const div = document.createElement('div');
+        div.style.marginBottom = '12px';
+
+        const title = document.createElement('h4');
+        title.textContent = recruiter;
+        div.appendChild(title);
+
+        const ul = document.createElement('ul');
+        ul.style.listStyle = 'none';
+        ul.style.padding = '0';
+        ul.style.margin = '0';
+
+        // Show all statuses, including zero counts if needed:
+        const allStatuses = ['Active', 'InActive', 'Holed', 'Rejected'];
+
+        allStatuses.forEach(status => {
+          const count = statuses[status] || 0;
+          const li = document.createElement('li');
+          li.textContent = `${status}: ${count}`;
+          li.style.borderBottom = '1px dashed #ddd';
+          li.style.padding = '4px 0';
+          ul.appendChild(li);
+        });
+
+        div.appendChild(ul);
+        statusSummaryByRecruiter.appendChild(div);
+      }
+    }
+
+    // Monthly summary by recruiter
+    const monthlyByRecruiter = {};
+
+    interviews.forEach(item => {
+      if (!item.date || !item.recruiter) return;
+      const dateObj = new Date(item.date);
+      if (isNaN(dateObj)) return;
+      const monthYear = dateObj.toLocaleString('default', { month: 'short', year: 'numeric' });
+      if (!monthlyByRecruiter[item.recruiter]) {
+        monthlyByRecruiter[item.recruiter] = {};
+      }
+      monthlyByRecruiter[item.recruiter][monthYear] = (monthlyByRecruiter[item.recruiter][monthYear] || 0) + 1;
+    });
+
+    monthlyByRecruiterContainer.innerHTML = '';
+
+    if (Object.keys(monthlyByRecruiter).length === 0) {
+      monthlyByRecruiterContainer.innerHTML = '<p>No interviews</p>';
+      return;
+    }
+
+    for (const [recruiter, months] of Object.entries(monthlyByRecruiter)) {
+      const div = document.createElement('div');
+      div.classList.add('monthly-by-recruiter');
+
+      const heading = document.createElement('h4');
+      heading.textContent = recruiter;
+      heading.style.marginBottom = '6px';
+      div.appendChild(heading);
+
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+      ul.style.margin = '0';
+
+      const sortedMonths = Object.entries(months).sort((a, b) => {
+        const parseMonthYear = str => new Date(Date.parse('1 ' + str));
+        return parseMonthYear(a[0]) - parseMonthYear(b[0]);
+      });
+
+      sortedMonths.forEach(([month, count]) => {
+        const li = document.createElement('li');
+        li.textContent = `${month}: ${count}`;
+        li.style.borderBottom = '1px dashed #ddd';
+        li.style.padding = '4px 0';
+        ul.appendChild(li);
+      });
+
+      div.appendChild(ul);
+      monthlyByRecruiterContainer.appendChild(div);
+    }
+  }
+
+  function renderTable() {
+    tableBody.innerHTML = '';
+    interviews.forEach((item, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.candidate}</td>
+        <td>${item.mobile}</td>
+        <td>${item.store}</td>
+        <td>${item.recruiter}</td>
+        <td>${item.date}</td>
+        <td>${item.status}</td>
+        <td>
+          <button class="btn-edit" onclick="editInterview(${index})">Edit</button>
+          <button class="btn-delete" onclick="deleteInterview(${index})">Delete</button>
+        </td>`;
+      tableBody.appendChild(row);
+    });
+  }
+
+  function resetForm() {
+    form.reset();
+    editIndex = null;
+    form.querySelector('button[type="submit"]').textContent = 'Add Interview';
+  }
+
+  function addOrUpdateInterview(e) {
+    e.preventDefault();
+    const candidate = form.candidate.value.trim();
+    const mobile = form.mobile.value.trim();
+    const store = form.store.value.trim();
+    const recruiter = form.recruiter.value;
+    const date = form.date.value;
+    const status = form.status.value;
+
+    if (editIndex === null) {
+      interviews.push({ candidate, mobile, store, recruiter, date, status });
+    } else {
+      interviews[editIndex] = { candidate, mobile, store, recruiter, date, status };
+    }
+    saveData();
+    renderTable();
+    renderSummary();
+    resetForm();
+  }
+
+  function editInterview(index) {
+    const item = interviews[index];
+    form.candidate.value = item.candidate;
+    form.mobile.value = item.mobile;
+    form.store.value = item.store;
+    form.recruiter.value = item.recruiter;
+    form.date.value = item.date;
+    form.status.value = item.status;
+    editIndex = index;
+    form.querySelector('button[type="submit"]').textContent = 'Update Interview';
+  }
+
+  function deleteInterview(index) {
+    if (confirm('Are you sure you want to delete this entry?')) {
+      interviews.splice(index, 1);
+      saveData();
+      renderTable();
+      renderSummary();
+      resetForm();
+    }
+  }
+
+  exportBtn.addEventListener('click', () => {
+    if (interviews.length === 0) {
+      alert('No data to export!');
+      return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(interviews);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Interviews');
+    XLSX.writeFile(wb, 'interview_data.xlsx');
+  });
+
+  form.addEventListener('submit', addOrUpdateInterview);
+
+  // Initial render
+  renderTable();
+  renderSummary();
+
+  // Expose functions for inline handlers
+  window.editInterview = editInterview;
+  window.deleteInterview = deleteInterview;
+</script>
+
+</body>
+</html>
+
