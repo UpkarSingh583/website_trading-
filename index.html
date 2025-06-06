@@ -91,6 +91,186 @@
     tbody tr:hover {
       background: #f1faff;
     }
+  <style>
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      margin: 0;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      color: #333;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 1000px;
+      width: 100%;
+      padding: 30px 40px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      font-size: 2.8rem;
+      color: #1a237e;
+      margin-bottom: 30px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      user-select: none;
+    }
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px 25px;
+      margin-bottom: 35px;
+    }
+    form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #3f51b5;
+      font-size: 1.05rem;
+      user-select: none;
+    }
+    form input, form select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #c5cae9;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      outline-offset: 2px;
+      outline-color: transparent;
+      font-weight: 500;
+      color: #333;
+      background-color: #fafafa;
+    }
+    form input:focus, form select:focus {
+      border-color: #303f9f;
+      background-color: #fff;
+      outline-color: #303f9f;
+    }
+    form button {
+      grid-column: 1 / -1;
+      background: linear-gradient(90deg, #3949ab, #1a237e);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.4s ease;
+      box-shadow: 0 5px 15px rgba(26,35,126,0.4);
+      user-select: none;
+    }
+    form button:hover {
+      background: linear-gradient(90deg, #1a237e, #3949ab);
+      box-shadow: 0 8px 20px rgba(26,35,126,0.6);
+    }
+    #exportBtn {
+      display: block;
+      margin: 0 auto 30px;
+      background: #43a047;
+      padding: 14px 28px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 4px 15px rgba(67,160,71,0.5);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    #exportBtn:hover {
+      background: #2e7d32;
+      box-shadow: 0 6px 20px rgba(46,125,50,0.7);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      background: white;
+    }
+    thead tr {
+      background: #3f51b5;
+      color: white;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    th, td {
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      vertical-align: middle;
+      transition: background-color 0.2s ease;
+    }
+    tbody tr:nth-child(even) {
+      background: #f9f9fb;
+    }
+    tbody tr:hover {
+      background: #e3e7ff;
+    }
+    .btn-edit, .btn-delete {
+      padding: 7px 14px;
+      font-size: 0.9rem;
+      margin-right: 8px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.25s ease;
+      user-select: none;
+    }
+    .btn-edit {
+      background-color: #ffb300;
+      color: #4a3c00;
+      box-shadow: 0 3px 8px rgba(255,179,0,0.4);
+    }
+    .btn-edit:hover {
+      background-color: #ffa000;
+      box-shadow: 0 5px 14px rgba(255,160,0,0.6);
+    }
+    .btn-delete {
+      background-color: #e53935;
+      color: white;
+      box-shadow: 0 3px 8px rgba(229,57,53,0.4);
+    }
+    .btn-delete:hover {
+      background-color: #c62828;
+      box-shadow: 0 5px 14px rgba(198,40,40,0.6);
+    }
+    /* Responsive tweaks */
+    @media (max-width: 640px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+      form button {
+        grid-column: 1;
+      }
+      th, td {
+        font-size: 0.9rem;
+        padding: 12px 10px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+    
     .btn-edit, .btn-delete {
       padding: 5px 10px;
       font-size: 0.85rem;
