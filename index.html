@@ -24,12 +24,16 @@
     .container {
       background: #fff;
       border-radius: 12px;
-      max-width: 1000px;
+      max-width: 1200px;
       width: 100%;
       padding: 30px 40px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
     }
     h1 {
+      width: 100%;
       text-align: center;
       font-weight: 700;
       font-size: 2.8rem;
@@ -40,10 +44,11 @@
       user-select: none;
     }
     form {
+      flex: 1 1 480px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px 25px;
-      margin-bottom: 35px;
+      margin-bottom: 20px;
     }
     form label {
       display: block;
@@ -91,7 +96,7 @@
     }
     #exportBtn {
       display: block;
-      margin: 0 auto 30px;
+      margin: 0 0 20px auto;
       background: #43a047;
       padding: 14px 28px;
       font-weight: 700;
@@ -109,12 +114,14 @@
       box-shadow: 0 6px 20px rgba(46,125,50,0.7);
     }
     table {
+      flex: 2 1 650px;
       width: 100%;
       border-collapse: collapse;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 6px 24px rgba(0,0,0,0.1);
       background: white;
+      min-width: 650px;
     }
     thead tr {
       background: #3f51b5;
@@ -131,6 +138,7 @@
       border-bottom: 1px solid #e0e0e0;
       vertical-align: middle;
       transition: background-color 0.2s ease;
+      word-break: break-word;
     }
     tbody tr:nth-child(even) {
       background: #f9f9fb;
@@ -167,7 +175,65 @@
       background-color: #c62828;
       box-shadow: 0 5px 14px rgba(198,40,40,0.6);
     }
+
+    /* Summary Panel */
+    .summary-panel {
+      flex: 1 1 300px;
+      background: #f5f7ff;
+      border-radius: 12px;
+      padding: 20px 25px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      max-height: 700px;
+      overflow-y: auto;
+    }
+    .summary-panel h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-weight: 700;
+      color: #1a237e;
+      user-select: none;
+      border-bottom: 2px solid #3f51b5;
+      padding-bottom: 6px;
+    }
+    .summary-panel ul {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .summary-panel ul li {
+      padding: 6px 4px;
+      border-bottom: 1px dashed #ccc;
+      font-weight: 600;
+      color: #333;
+    }
+    .summary-panel div > div {
+      margin-bottom: 20px;
+    }
+    .summary-panel h4 {
+      margin: 0 0 8px;
+      color: #303f9f;
+      font-weight: 700;
+      user-select: none;
+    }
+    .summary-panel ul li:last-child {
+      border-bottom: none;
+    }
+
     /* Responsive tweaks */
+    @media (max-width: 1100px) {
+      .container {
+        flex-direction: column;
+        padding: 20px;
+      }
+      table {
+        min-width: 100%;
+      }
+      .summary-panel {
+        max-height: none;
+        margin-top: 40px;
+      }
+    }
     @media (max-width: 640px) {
       form {
         grid-template-columns: 1fr;
@@ -190,382 +256,339 @@
   <div class="container">
     <h1>Interview Tracker</h1>
 
-    <form id="interviewForm">
+    <form id="interviewForm" autocomplete="off">
       <div>
         <label for="candidate">Candidate Name:</label>
-        <input type="text" id="candidate" required />
+        <input type="text" id="candidate" name="candidate" required />
       </div>
       <div>
         <label for="mobile">Mobile Number:</label>
-        <input type="tel" id="mobile" pattern="\d{10}" maxlength="10" placeholder="10-digit mobile" required />
+        <input type="tel" id="mobile" name="mobile" pattern="\d{10}" maxlength="10" placeholder="10-digit mobile" required />
       </div>
       <div>
         <label for="store">Store Name:</label>
-        <input type="text" id="store" required />
+        <input type="text" id="store" name="store" required />
       </div>
       <div>
         <label for="recruiter">Recruiter Name:</label>
-        <input type="text" id="recruiter" required />
+        <input type="text" id="recruiter" name="recruiter" required />
       </div>
       <div>
         <label for="date">Date:</label>
-        <input type="date" id="date" required />
+        <input type="date" id="date" name="date" required />
       </div>
       <div>
         <label for="status">Status:</label>
-        <select id="status" required>
+        <select id="status" name="status" required>
           <option value="">Select status</option>
           <option value="Active">Active</option>
           <option value="InActive">InActive</option>
-          <option value="Valley Jagah Interview">Holed</option>
-          <option value="Completed">Reject</option>
+          <option value="Holed">Holed</option>
+          <option value="Rejected">Rejected</option>
         </select>
       </div>
-      <button type="submit">Add Interview</button>
+      <button type="submit" id="submitBtn">Add Interview</button>
     </form>
 
-    <button id="exportBtn">📥 Export to Excel</button>
+    <button id="exportBtn" title="Export all interviews to Excel">Export to Excel</button>
 
-    <table id="interviewTable">
+    <table id="interviewTable" aria-label="Interview Data Table">
       <thead>
         <tr>
-          <th>Candidate</th>
-          <th>Mobile</th>
-          <th>Store</th>
-          <th>Recruiter</th>
+          <th>Candidate Name</th>
+          <th>Mobile Number</th>
+          <th>Store Name</th>
+          <th>Recruiter Name</th>
           <th>Date</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody></tbody>
+      <tbody>
+        <!-- Interviews added here -->
+      </tbody>
     </table>
+
+    <aside class="summary-panel" aria-label="Summary Panels">
+      <div id="summaryTotals">
+        <h3>Recruiter Totals</h3>
+        <ul id="totalByRecruiter"></ul>
+      </div>
+      <div id="summaryStatus">
+        <h3>Status Summary by Recruiter</h3>
+        <div id="statusByRecruiter"></div>
+      </div>
+      <div id="summaryMonthly">
+        <h3>Monthly Summary by Recruiter</h3>
+        <div id="monthlyByRecruiter"></div>
+      </div>
+    </aside>
   </div>
 
-<script>
-  const form = document.getElementById('interviewForm');
-  const tableBody = document.querySelector('#interviewTable tbody');
-  const exportBtn = document.getElementById('exportBtn');
-  let interviews = JSON.parse(localStorage.getItem('interviewData')) || [];
-  let editIndex = null;
+  <script>
+    (() => {
+      const form = document.getElementById('interviewForm');
+      const tableBody = document.querySelector('#interviewTable tbody');
+      const exportBtn = document.getElementById('exportBtn');
+      const submitBtn = document.getElementById('submitBtn');
 
-  function saveData() {
-    localStorage.setItem('interviewData', JSON.stringify(interviews));
-  }
+      const totalByRecruiterEl = document.getElementById('totalByRecruiter');
+      const statusByRecruiterEl = document.getElementById('statusByRecruiter');
+      const monthlyByRecruiterEl = document.getElementById('monthlyByRecruiter');
 
-  function renderTable() {
-    tableBody.innerHTML = '';
-    interviews.forEach((item, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${item.candidate}</td>
-        <td>${item.mobile}</td>
-        <td>${item.store}</td>
-        <td>${item.recruiter}</td>
-        <td>${item.date}</td>
-        <td>${item.status}</td>
-        <td>
-          <button class="btn-edit" onclick="editInterview(${index})">Edit</button>
-          <button class="btn-delete" onclick="deleteInterview(${index})">Delete</button>
-        </td>`;
-      tableBody.appendChild(row);
-    });
-  }
+      // Keep track of interviews in an array
+      let interviews = [];
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const data = {
-      candidate: document.getElementById('candidate').value.trim(),
-      mobile: document.getElementById('mobile').value.trim(),
-      store: document.getElementById('store').value.trim(),
-      recruiter: document.getElementById('recruiter').value.trim(),
-      date: document.getElementById('date').value,
-      status: document.getElementById('status').value
-    };
-    if (!/^\d{10}$/.test(data.mobile)) {
-      alert('Please enter a valid 10-digit mobile number.');
-      return;
-    }
-    if (!data.status) {
-      alert('Please select a status.');
-      return;
-    }
-    if (editIndex !== null) {
-      interviews[editIndex] = data;
-      editIndex = null;
-    } else {
-      interviews.push(data);
-    }
-    saveData();
-    form.reset();
-    renderTable();
-  });
+      // Track editing state
+      let editingIndex = -1;
 
-  function editInterview(index) {
-    const item = interviews[index];
-    document.getElementById('candidate').value = item.candidate;
-    document.getElementById('mobile').value = item.mobile;
-    document.getElementById('store').value = item.store;
-    document.getElementById('recruiter').value = item.recruiter;
-    document.getElementById('date').value = item.date;
-    document.getElementById('status').value = item.status;
-    editIndex = index;
-  }
-  window.editInterview = editInterview; // make accessible from inline onclick
+      // Clean and normalize status values
+      const STATUS_OPTIONS = ["Active", "InActive", "Holed", "Rejected"];
 
-  function deleteInterview(index) {
-    if (confirm('Are you sure to delete this record?')) {
-      interviews.splice(index, 1);
-      saveData();
-      renderTable();
-    }
-  }
-  window.deleteInterview = deleteInterview; // make accessible from inline onclick
-
-  exportBtn.addEventListener('click', () => {
-    if (interviews.length === 0) {
-      alert('No data to export!');
-      return;
-    }
-    const ws = XLSX.utils.json_to_sheet(interviews);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Interviews');
-    XLSX.writeFile(wb, 'interviews.xlsx');
-  });
-
-  renderTable();
-</script>
-
-</body>
-</html>
-
-<!-- Right: Summary Panels -->
-  <div class="summary-panel">
-    <h3>Recruiter Summary</h3>
-    <ul id="recruiterSummary"></ul>
-
-    <h3>Status Summary by Recruiter</h3>
-    <div id="statusSummaryByRecruiter"></div>
-
-    <h3>Monthly Summary By Recruiter</h3>
-    <div id="monthlyByRecruiterContainer"></div>
-  </div>
-</div>
-
-<script>
-  const form = document.getElementById('interviewForm');
-  const tableBody = document.querySelector('#interviewTable tbody');
-  const exportBtn = document.getElementById('exportBtn');
-  const recruiterSummary = document.getElementById('recruiterSummary');
-  const statusSummaryByRecruiter = document.getElementById('statusSummaryByRecruiter');
-  const monthlyByRecruiterContainer = document.getElementById('monthlyByRecruiterContainer');
-
-  let interviews = JSON.parse(localStorage.getItem('interviewData')) || [];
-  let editIndex = null;
-
-  function saveData() {
-    localStorage.setItem('interviewData', JSON.stringify(interviews));
-  }
-
-  function renderSummary() {
-    // Recruiter summary (total counts)
-    const recruiterCounts = interviews.reduce((acc, curr) => {
-      acc[curr.recruiter] = (acc[curr.recruiter] || 0) + 1;
-      return acc;
-    }, {});
-    recruiterSummary.innerHTML = Object.entries(recruiterCounts)
-      .map(([name, count]) => `<li>${name}: ${count}</li>`)
-      .join('') || '<li>No interviews</li>';
-
-    // Status summary by recruiter
-    // Structure: { recruiter: { status: count, ... }, ... }
-    const statusByRecruiter = {};
-    interviews.forEach(({ recruiter, status }) => {
-      if (!recruiter || !status) return;
-      if (!statusByRecruiter[recruiter]) {
-        statusByRecruiter[recruiter] = {};
+      // Format date as yyyy-mm-dd for display and sorting
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        if (isNaN(d)) return dateStr;
+        return d.toISOString().split('T')[0];
       }
-      statusByRecruiter[recruiter][status] = (statusByRecruiter[recruiter][status] || 0) + 1;
-    });
 
-    statusSummaryByRecruiter.innerHTML = '';
-
-    if (Object.keys(statusByRecruiter).length === 0) {
-      statusSummaryByRecruiter.innerHTML = '<p>No interviews</p>';
-    } else {
-      for (const [recruiter, statuses] of Object.entries(statusByRecruiter)) {
-        const div = document.createElement('div');
-        div.style.marginBottom = '12px';
-
-        const title = document.createElement('h4');
-        title.textContent = recruiter;
-        div.appendChild(title);
-
-        const ul = document.createElement('ul');
-        ul.style.listStyle = 'none';
-        ul.style.padding = '0';
-        ul.style.margin = '0';
-
-        // Show all statuses, including zero counts if needed:
-        const allStatuses = ['Active', 'InActive', 'Holed', 'Rejected'];
-
-        allStatuses.forEach(status => {
-          const count = statuses[status] || 0;
-          const li = document.createElement('li');
-          li.textContent = `${status}: ${count}`;
-          li.style.borderBottom = '1px dashed #ddd';
-          li.style.padding = '4px 0';
-          ul.appendChild(li);
+      // Render the interviews table rows
+      function renderTable() {
+        tableBody.innerHTML = '';
+        if (interviews.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; font-style:italic; color:#888;">No interviews found</td></tr>`;
+          return;
+        }
+        interviews.forEach((iv, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${iv.candidate}</td>
+            <td>${iv.mobile}</td>
+            <td>${iv.store}</td>
+            <td>${iv.recruiter}</td>
+            <td>${formatDate(iv.date)}</td>
+            <td>${iv.status}</td>
+            <td>
+              <button class="btn-edit" data-index="${i}" aria-label="Edit interview of ${iv.candidate}">Edit</button>
+              <button class="btn-delete" data-index="${i}" aria-label="Delete interview of ${iv.candidate}">Delete</button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
         });
-
-        div.appendChild(ul);
-        statusSummaryByRecruiter.appendChild(div);
       }
-    }
 
-    // Monthly summary by recruiter
-    const monthlyByRecruiter = {};
+      // Update summary panels
+      function updateSummaries() {
+        // Recruiter totals
+        const totals = {};
+        for (const iv of interviews) {
+          totals[iv.recruiter] = (totals[iv.recruiter] || 0) + 1;
+        }
+        totalByRecruiterEl.innerHTML = '';
+        Object.entries(totals).sort((a,b) => a[0].localeCompare(b[0])).forEach(([rec, count]) => {
+          const li = document.createElement('li');
+          li.textContent = `${rec}: ${count}`;
+          totalByRecruiterEl.appendChild(li);
+        });
+        if (interviews.length === 0) totalByRecruiterEl.innerHTML = '<li style="font-style: italic; color:#666;">No data</li>';
 
-    interviews.forEach(item => {
-      if (!item.date || !item.recruiter) return;
-      const dateObj = new Date(item.date);
-      if (isNaN(dateObj)) return;
-      const monthYear = dateObj.toLocaleString('default', { month: 'short', year: 'numeric' });
-      if (!monthlyByRecruiter[item.recruiter]) {
-        monthlyByRecruiter[item.recruiter] = {};
+        // Status summary by recruiter
+        /*
+          We want something like:
+          Recruiter A
+            Active: 2
+            Rejected: 1
+          Recruiter B
+            InActive: 3
+            Holed: 1
+        */
+        statusByRecruiterEl.innerHTML = '';
+        if (interviews.length === 0) {
+          statusByRecruiterEl.innerHTML = '<p style="font-style: italic; color:#666;">No data</p>';
+          return;
+        }
+        const statusSummary = {};
+        for (const iv of interviews) {
+          if (!statusSummary[iv.recruiter]) statusSummary[iv.recruiter] = {};
+          statusSummary[iv.recruiter][iv.status] = (statusSummary[iv.recruiter][iv.status] || 0) + 1;
+        }
+        for (const recruiter of Object.keys(statusSummary).sort()) {
+          const container = document.createElement('div');
+          const h4 = document.createElement('h4');
+          h4.textContent = recruiter;
+          container.appendChild(h4);
+
+          const ul = document.createElement('ul');
+          for (const status of STATUS_OPTIONS) {
+            const count = statusSummary[recruiter][status] || 0;
+            const li = document.createElement('li');
+            li.textContent = `${status}: ${count}`;
+            ul.appendChild(li);
+          }
+          container.appendChild(ul);
+          statusByRecruiterEl.appendChild(container);
+        }
+
+        // Monthly summary by recruiter
+        /*
+          Group by recruiter -> month-year -> count
+          Display:
+          Recruiter A
+            2025-06: 3
+            2025-07: 1
+          Recruiter B
+            2025-06: 5
+        */
+        monthlyByRecruiterEl.innerHTML = '';
+        if (interviews.length === 0) {
+          monthlyByRecruiterEl.innerHTML = '<p style="font-style: italic; color:#666;">No data</p>';
+          return;
+        }
+        const monthlySummary = {};
+        for (const iv of interviews) {
+          if (!iv.date) continue;
+          const d = new Date(iv.date);
+          if (isNaN(d)) continue;
+          const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          if (!monthlySummary[iv.recruiter]) monthlySummary[iv.recruiter] = {};
+          monthlySummary[iv.recruiter][ym] = (monthlySummary[iv.recruiter][ym] || 0) + 1;
+        }
+        for (const recruiter of Object.keys(monthlySummary).sort()) {
+          const container = document.createElement('div');
+          const h4 = document.createElement('h4');
+          h4.textContent = recruiter;
+          container.appendChild(h4);
+
+          const ul = document.createElement('ul');
+          // Sort months ascending
+          for (const month of Object.keys(monthlySummary[recruiter]).sort()) {
+            const count = monthlySummary[recruiter][month];
+            const li = document.createElement('li');
+            li.textContent = `${month}: ${count}`;
+            ul.appendChild(li);
+          }
+          container.appendChild(ul);
+          monthlyByRecruiterEl.appendChild(container);
+        }
       }
-      monthlyByRecruiter[item.recruiter][monthYear] = (monthlyByRecruiter[item.recruiter][monthYear] || 0) + 1;
-    });
 
-    monthlyByRecruiterContainer.innerHTML = '';
+      // Clear form
+      function clearForm() {
+        form.reset();
+        editingIndex = -1;
+        submitBtn.textContent = 'Add Interview';
+      }
 
-    if (Object.keys(monthlyByRecruiter).length === 0) {
-      monthlyByRecruiterContainer.innerHTML = '<p>No interviews</p>';
-      return;
-    }
+      // Populate form for editing
+      function populateForm(index) {
+        const iv = interviews[index];
+        form.candidate.value = iv.candidate;
+        form.mobile.value = iv.mobile;
+        form.store.value = iv.store;
+        form.recruiter.value = iv.recruiter;
+        form.date.value = formatDate(iv.date);
+        form.status.value = iv.status;
+        editingIndex = index;
+        submitBtn.textContent = 'Update Interview';
+      }
 
-    for (const [recruiter, months] of Object.entries(monthlyByRecruiter)) {
-      const div = document.createElement('div');
-      div.classList.add('monthly-by-recruiter');
+      // Validate mobile number
+      function isValidMobile(mobile) {
+        return /^\d{10}$/.test(mobile);
+      }
 
-      const heading = document.createElement('h4');
-      heading.textContent = recruiter;
-      heading.style.marginBottom = '6px';
-      div.appendChild(heading);
+      // Form submission handler
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-      const ul = document.createElement('ul');
-      ul.style.listStyle = 'none';
-      ul.style.padding = '0';
-      ul.style.margin = '0';
+        const candidate = form.candidate.value.trim();
+        const mobile = form.mobile.value.trim();
+        const store = form.store.value.trim();
+        const recruiter = form.recruiter.value.trim();
+        const date = form.date.value;
+        const status = form.status.value;
 
-      const sortedMonths = Object.entries(months).sort((a, b) => {
-        const parseMonthYear = str => new Date(Date.parse('1 ' + str));
-        return parseMonthYear(a[0]) - parseMonthYear(b[0]);
+        if (!candidate || !mobile || !store || !recruiter || !date || !status) {
+          alert('Please fill out all fields.');
+          return;
+        }
+        if (!isValidMobile(mobile)) {
+          alert('Please enter a valid 10-digit mobile number.');
+          return;
+        }
+        if (!STATUS_OPTIONS.includes(status)) {
+          alert('Please select a valid status.');
+          return;
+        }
+
+        const interviewData = { candidate, mobile, store, recruiter, date, status };
+
+        if (editingIndex === -1) {
+          // Add new interview
+          interviews.push(interviewData);
+        } else {
+          // Update existing interview
+          interviews[editingIndex] = interviewData;
+        }
+
+        renderTable();
+        updateSummaries();
+        clearForm();
       });
 
-      sortedMonths.forEach(([month, count]) => {
-        const li = document.createElement('li');
-        li.textContent = `${month}: ${count}`;
-        li.style.borderBottom = '1px dashed #ddd';
-        li.style.padding = '4px 0';
-        ul.appendChild(li);
+      // Edit & Delete buttons (event delegation)
+      tableBody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-edit')) {
+          const idx = +e.target.dataset.index;
+          populateForm(idx);
+          window.scrollTo({top:0, behavior:'smooth'});
+        }
+        if (e.target.classList.contains('btn-delete')) {
+          const idx = +e.target.dataset.index;
+          if (confirm(`Are you sure you want to delete the interview for "${interviews[idx].candidate}"?`)) {
+            interviews.splice(idx, 1);
+            renderTable();
+            updateSummaries();
+            if (editingIndex === idx) clearForm();
+            else if (editingIndex > idx) editingIndex--; // Adjust editing index if necessary
+          }
+        }
       });
 
-      div.appendChild(ul);
-      monthlyByRecruiterContainer.appendChild(div);
-    }
-  }
+      // Export to Excel
+      exportBtn.addEventListener('click', () => {
+        if (interviews.length === 0) {
+          alert('No interviews to export.');
+          return;
+        }
 
-  function renderTable() {
-    tableBody.innerHTML = '';
-    interviews.forEach((item, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${item.candidate}</td>
-        <td>${item.mobile}</td>
-        <td>${item.store}</td>
-        <td>${item.recruiter}</td>
-        <td>${item.date}</td>
-        <td>${item.status}</td>
-        <td>
-          <button class="btn-edit" onclick="editInterview(${index})">Edit</button>
-          <button class="btn-delete" onclick="deleteInterview(${index})">Delete</button>
-        </td>`;
-      tableBody.appendChild(row);
-    });
-  }
+        // Prepare worksheet data with headers
+        const wsData = [
+          ['Candidate Name', 'Mobile Number', 'Store Name', 'Recruiter Name', 'Date', 'Status'],
+          ...interviews.map(iv => [
+            iv.candidate,
+            iv.mobile,
+            iv.store,
+            iv.recruiter,
+            formatDate(iv.date),
+            iv.status
+          ])
+        ];
 
-  function resetForm() {
-    form.reset();
-    editIndex = null;
-    form.querySelector('button[type="submit"]').textContent = 'Add Interview';
-  }
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        XLSX.utils.book_append_sheet(wb, ws, 'Interviews');
 
-  function addOrUpdateInterview(e) {
-    e.preventDefault();
-    const candidate = form.candidate.value.trim();
-    const mobile = form.mobile.value.trim();
-    const store = form.store.value.trim();
-    const recruiter = form.recruiter.value;
-    const date = form.date.value;
-    const status = form.status.value;
+        XLSX.writeFile(wb, `Interview_Tracker_${new Date().toISOString().slice(0,10)}.xlsx`);
+      });
 
-    if (editIndex === null) {
-      interviews.push({ candidate, mobile, store, recruiter, date, status });
-    } else {
-      interviews[editIndex] = { candidate, mobile, store, recruiter, date, status };
-    }
-    saveData();
-    renderTable();
-    renderSummary();
-    resetForm();
-  }
-
-  function editInterview(index) {
-    const item = interviews[index];
-    form.candidate.value = item.candidate;
-    form.mobile.value = item.mobile;
-    form.store.value = item.store;
-    form.recruiter.value = item.recruiter;
-    form.date.value = item.date;
-    form.status.value = item.status;
-    editIndex = index;
-    form.querySelector('button[type="submit"]').textContent = 'Update Interview';
-  }
-
-  function deleteInterview(index) {
-    if (confirm('Are you sure you want to delete this entry?')) {
-      interviews.splice(index, 1);
-      saveData();
+      // Initialize empty table and summaries
       renderTable();
-      renderSummary();
-      resetForm();
-    }
-  }
+      updateSummaries();
 
-  exportBtn.addEventListener('click', () => {
-    if (interviews.length === 0) {
-      alert('No data to export!');
-      return;
-    }
-
-    const ws = XLSX.utils.json_to_sheet(interviews);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Interviews');
-    XLSX.writeFile(wb, 'interview_data.xlsx');
-  });
-
-  form.addEventListener('submit', addOrUpdateInterview);
-
-  // Initial render
-  renderTable();
-  renderSummary();
-
-  // Expose functions for inline handlers
-  window.editInterview = editInterview;
-  window.deleteInterview = deleteInterview;
-</script>
+    })();
+  </script>
 
 </body>
 </html>
-
