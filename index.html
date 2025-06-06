@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Advanced Interview Tracker</title>
+  <title>Interview Tracker</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
@@ -134,14 +134,10 @@
   <div>
     <label for="status">Status:</label>
     <select id="status" required>
-      <option value="">Select</option>
-      <option value="Scheduled">Scheduled</option>
-      <option value="Valley Jagah Interview">Valley Jagah Interview</option>
-      <option value="Completed">Completed</option>
-      <option value="Selected">Selected</option>
-      <option value="Rejected">Rejected</option>
-      <option value="Done">Done</option>
-      <option value="Cancelled">Cancelled</option>
+      <option value="">Active</option>
+      <option value="Scheduled">InActive</option>
+      <option value="Valley Jagah Interview">Holed</option>
+      <option value="Completed">Reject</option>
     </select>
   </div>
   <button type="submit">Add Interview</button>
@@ -152,14 +148,11 @@
 <table id="interviewTable">
   <thead>
     <tr>
-      <th>Candidate</th>
-      <th>Mobile</th>
-      <th>Store</th>
-      <th>Recruiter</th>
-      <th>Date</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
+      <th>Active</th>
+      <th>InActive</th>
+      <th>Holed</th>
+      <th>Reject</th>
+   </tr>
   </thead>
   <tbody></tbody>
 </table>
