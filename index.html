@@ -6,92 +6,6 @@
   <title>Interview Tracker</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f7fc;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-    form {
-      max-width: 900px;
-      margin: 0 auto 30px;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-    }
-    form label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-    }
-    form input, form select {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1.5px solid #ccc;
-      border-radius: 5px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    form button {
-      grid-column: span 2;
-      padding: 12px;
-      font-size: 1.1rem;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    form button:hover {
-      background: #0056b3;
-    }
-    #exportBtn {
-      display: block;
-      margin: 0 auto 20px;
-      background: #28a745;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    #exportBtn:hover {
-      background: #218838;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #ddd;
-      vertical-align: middle;
-    }
-    th {
-      background: #007bff;
-      color: white;
-    }
-    tbody tr:hover {
-      background: #f1faff;
-    }
-  <style>
     /* Reset & base */
     * {
       box-sizing: border-box;
@@ -270,72 +184,63 @@
       }
     }
   </style>
-    
-    .btn-edit, .btn-delete {
-      padding: 5px 10px;
-      font-size: 0.85rem;
-      margin-right: 5px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .btn-edit { background-color: #ffc107; }
-    .btn-edit:hover { background-color: #e0a800; }
-    .btn-delete { background-color: #dc3545; color: white; }
-    .btn-delete:hover { background-color: #c82333; }
-  </style>
 </head>
 <body>
 
-<h1>Interview Tracker</h1>
+  <div class="container">
+    <h1>Interview Tracker</h1>
 
-<form id="interviewForm">
-  <div>
-    <label for="candidate">Candidate Name:</label>
-    <input type="text" id="candidate" required />
-  </div>
-  <div>
-    <label for="mobile">Mobile Number:</label>
-    <input type="tel" id="mobile" pattern="\d{10}" maxlength="10" placeholder="10-digit mobile" required />
-  </div>
-  <div>
-    <label for="store">Store Name:</label>
-    <input type="text" id="store" required />
-  </div>
-  <div>
-    <label for="recruiter">Recruiter Name:</label>
-    <input type="text" id="recruiter" required />
-  </div>
-  <div>
-    <label for="date">Date:</label>
-    <input type="date" id="date" required />
-  </div>
-  <div>
-    <label for="status">Status:</label>
-    <select id="status" required>
-      <option value="">Active</option>
-      <option value="Scheduled">InActive</option>
-      <option value="Valley Jagah Interview">Holed</option>
-      <option value="Completed">Reject</option>
-    </select>
-  </div>
-  <button type="submit">Add Interview</button>
-</form>
+    <form id="interviewForm">
+      <div>
+        <label for="candidate">Candidate Name:</label>
+        <input type="text" id="candidate" required />
+      </div>
+      <div>
+        <label for="mobile">Mobile Number:</label>
+        <input type="tel" id="mobile" pattern="\d{10}" maxlength="10" placeholder="10-digit mobile" required />
+      </div>
+      <div>
+        <label for="store">Store Name:</label>
+        <input type="text" id="store" required />
+      </div>
+      <div>
+        <label for="recruiter">Recruiter Name:</label>
+        <input type="text" id="recruiter" required />
+      </div>
+      <div>
+        <label for="date">Date:</label>
+        <input type="date" id="date" required />
+      </div>
+      <div>
+        <label for="status">Status:</label>
+        <select id="status" required>
+          <option value="">Select status</option>
+          <option value="Active">Active</option>
+          <option value="InActive">InActive</option>
+          <option value="Valley Jagah Interview">Holed</option>
+          <option value="Completed">Reject</option>
+        </select>
+      </div>
+      <button type="submit">Add Interview</button>
+    </form>
 
-<button id="exportBtn">📥 Export to Excel</button>
+    <button id="exportBtn">📥 Export to Excel</button>
 
-<table id="interviewTable">
-  <thead>
-    <tr>
-      <th>Active</th>
-      <th>InActive</th>
-      <th>Holed</th>
-      <th>Reject</th>
-   </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <table id="interviewTable">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Mobile</th>
+          <th>Store</th>
+          <th>Recruiter</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
 <script>
   const form = document.getElementById('interviewForm');
@@ -381,6 +286,10 @@
       alert('Please enter a valid 10-digit mobile number.');
       return;
     }
+    if (!data.status) {
+      alert('Please select a status.');
+      return;
+    }
     if (editIndex !== null) {
       interviews[editIndex] = data;
       editIndex = null;
@@ -402,6 +311,7 @@
     document.getElementById('status').value = item.status;
     editIndex = index;
   }
+  window.editInterview = editInterview; // make accessible from inline onclick
 
   function deleteInterview(index) {
     if (confirm('Are you sure to delete this record?')) {
@@ -410,8 +320,13 @@
       renderTable();
     }
   }
+  window.deleteInterview = deleteInterview; // make accessible from inline onclick
 
   exportBtn.addEventListener('click', () => {
+    if (interviews.length === 0) {
+      alert('No data to export!');
+      return;
+    }
     const ws = XLSX.utils.json_to_sheet(interviews);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Interviews');
