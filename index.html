@@ -1,225 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Advanced Interview Tracker</title>
-<style>
-  /* Reset & base */
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #eef2f7;
-    margin: 0; padding: 20px;
-  }
-  h1 {
-    text-align: center;
-    color: #34495e;
-    margin-bottom: 25px;
-  }
-  #siteNameSelector {
-    max-width: 300px;
-    margin: 0 auto 30px auto;
-    text-align: center;
-  }
-  #siteNameSelector label {
-    font-weight: 600;
-    margin-right: 10px;
-  }
-  #siteNameSelector select {
-    padding: 6px 10px;
-    font-size: 1rem;
-  }
-
-  form {
-    max-width: 700px;
-    background: white;
-    padding: 20px 25px;
-    margin: 0 auto 30px auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 30px;
-  }
-  form label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 6px;
-  }
-  form input, form select {
-    padding: 10px 12px;
-    font-size: 1rem;
-    border: 1.8px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    transition: border-color 0.3s ease;
-  }
-  form input:focus, form select:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-  form button {
-    grid-column: span 2;
-    padding: 12px 0;
-    font-size: 1.1rem;
-    background: #007bff;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  form button:hover {
-    background: #0056b3;
-  }
-
-  #searchBox {
-    max-width: 700px;
-    margin: 0 auto 20px auto;
-    display: flex;
-    justify-content: flex-end;
-  }
-  #searchBox input {
-    width: 250px;
-    padding: 10px 12px;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: 1.8px solid #ccc;
-    transition: border-color 0.3s ease;
-  }
-  #searchBox input:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-
-  table {
-    max-width: 700px;
-    margin: 0 auto;
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  }
-  th, td {
-    padding: 14px 18px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    font-size: 0.95rem;
-  }
-  th {
-    background: #007bff;
-    color: white;
-    user-select: none;
-  }
-  tbody tr:hover {
-    background: #f1faff;
-  }
-
-  /* Status colors */
-  .status-Scheduled {
-    background-color: #fff3cd;
-  }
-  .status-Valley\ Jagah\ Interview {
-    background-color: #cce5ff;
-  }
-  .status-Completed {
-    background-color: #d4edda;
-  }
-  .status-Selected {
-    background-color: #28a745;
-    color: white;
-    font-weight: 600;
-  }
-  .status-Rejected {
-    background-color: #f8d7da;
-    color: #721c24;
-    font-weight: 600;
-  }
-  .status-Done {
-    background-color: #d1ecf1;
-  }
-  .status-Cancelled {
-    background-color: #f5c6cb;
-  }
-
-  /* Action buttons */
-  .btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-    font-size: 0.85rem;
-  }
-  .btn-edit {
-    background-color: #ffc107;
-    color: #212529;
-    margin-right: 8px;
-  }
-  .btn-edit:hover {
-    background-color: #e0a800;
-  }
-  .btn-delete {
-    background-color: #dc3545;
-    color: white;
-  }
-  .btn-delete:hover {
-    background-color: #c82333;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Advanced Interview Tracker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fc;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
     form {
-      grid-template-columns: 1fr;
+      max-width: 900px;
+      margin: 0 auto 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
     }
-    #searchBox {
-      justify-content: center;
-      margin-bottom: 15px;
+    form label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
     }
-    #searchBox input {
+    form input, form select {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1.5px solid #ccc;
+      border-radius: 5px;
       width: 100%;
-      max-width: 400px;
+      box-sizing: border-box;
+    }
+    form button {
+      grid-column: span 2;
+      padding: 12px;
+      font-size: 1.1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    form button:hover {
+      background: #0056b3;
+    }
+    #exportBtn {
+      display: block;
+      margin: 0 auto 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #exportBtn:hover {
+      background: #218838;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     }
     th, td {
-      font-size: 0.9rem;
-      padding: 10px 12px;
+      padding: 12px;
+      text-align: left;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #ddd;
+      vertical-align: middle;
     }
-  }
-</style>
+    th {
+      background: #007bff;
+      color: white;
+    }
+    tbody tr:hover {
+      background: #f1faff;
+    }
+    .btn-edit, .btn-delete {
+      padding: 5px 10px;
+      font-size: 0.85rem;
+      margin-right: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .btn-edit { background-color: #ffc107; }
+    .btn-edit:hover { background-color: #e0a800; }
+    .btn-delete { background-color: #dc3545; color: white; }
+    .btn-delete:hover { background-color: #c82333; }
+  </style>
 </head>
 <body>
 
-<div id="siteNameSelector">
-  <label for="siteName">Select Website Name:</label>
-  <select id="siteName">
-    <option value="Upkar">Upkar</option>
-    <option value="Gulab">Gulab</option>
-  </select>
-</div>
-
-<h1 id="siteTitle">Interview Tracker - Upkar</h1>
+<h1>Advanced Interview Tracker</h1>
 
 <form id="interviewForm">
   <div>
     <label for="candidate">Candidate Name:</label>
-    <input type="text" id="candidate" placeholder="Enter candidate name" required />
+    <input type="text" id="candidate" required />
   </div>
-
   <div>
-    <label for="date">Interview Date:</label>
+    <label for="mobile">Mobile Number:</label>
+    <input type="tel" id="mobile" pattern="\d{10}" maxlength="10" placeholder="10-digit mobile" required />
+  </div>
+  <div>
+    <label for="store">Store Name:</label>
+    <input type="text" id="store" required />
+  </div>
+  <div>
+    <label for="recruiter">Recruiter Name:</label>
+    <input type="text" id="recruiter" required />
+  </div>
+  <div>
+    <label for="date">Date:</label>
     <input type="date" id="date" required />
   </div>
-
   <div>
     <label for="status">Status:</label>
     <select id="status" required>
-      <option value="">Select Status</option>
+      <option value="">Select</option>
       <option value="Scheduled">Scheduled</option>
       <option value="Valley Jagah Interview">Valley Jagah Interview</option>
       <option value="Completed">Completed</option>
@@ -229,161 +144,107 @@
       <option value="Cancelled">Cancelled</option>
     </select>
   </div>
-
-  <div style="display: flex; align-items: flex-end;">
-    <button type="submit" id="submitBtn">Add Interview</button>
-  </div>
+  <button type="submit">Add Interview</button>
 </form>
 
-<div id="searchBox">
-  <input type="text" id="searchInput" placeholder="Search by candidate or status..." />
-</div>
+<button id="exportBtn">📥 Export to Excel</button>
 
 <table id="interviewTable">
   <thead>
     <tr>
-      <th>Candidate Name</th>
+      <th>Candidate</th>
+      <th>Mobile</th>
+      <th>Store</th>
+      <th>Recruiter</th>
       <th>Date</th>
       <th>Status</th>
       <th>Actions</th>
     </tr>
   </thead>
-  <tbody>
-    <!-- Data rows go here -->
-  </tbody>
+  <tbody></tbody>
 </table>
 
 <script>
   const form = document.getElementById('interviewForm');
   const tableBody = document.querySelector('#interviewTable tbody');
-  const siteNameSelector = document.getElementById('siteName');
-  const siteTitle = document.getElementById('siteTitle');
-  const searchInput = document.getElementById('searchInput');
-  const submitBtn = document.getElementById('submitBtn');
-
-  let interviews = [];
+  const exportBtn = document.getElementById('exportBtn');
+  let interviews = JSON.parse(localStorage.getItem('interviewData')) || [];
   let editIndex = null;
 
-  // Load data from localStorage
-  function loadData() {
-    const data = localStorage.getItem('interviewData');
-    if (data) {
-      interviews = JSON.parse(data);
-    } else {
-      interviews = [];
-    }
-  }
-
-  // Save data to localStorage
   function saveData() {
     localStorage.setItem('interviewData', JSON.stringify(interviews));
   }
 
-  // Render interviews table
-  function renderTable(filter = '') {
+  function renderTable() {
     tableBody.innerHTML = '';
-    const filtered = interviews.filter(item => {
-      const searchText = filter.toLowerCase();
-      return (
-        item.candidate.toLowerCase().includes(searchText) ||
-        item.status.toLowerCase().includes(searchText)
-      );
-    });
-
-    if(filtered.length === 0){
-      tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">No interviews found</td></tr>`;
-      return;
-    }
-
-    filtered.forEach((item, index) => {
-      const tr = document.createElement('tr');
-      tr.className = 'status-' + item.status.replace(/\s/g, '\\ ');
-      tr.innerHTML = `
+    interviews.forEach((item, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
         <td>${item.candidate}</td>
+        <td>${item.mobile}</td>
+        <td>${item.store}</td>
+        <td>${item.recruiter}</td>
         <td>${item.date}</td>
         <td>${item.status}</td>
         <td>
-          <button class="btn btn-edit" data-index="${index}">Edit</button>
-          <button class="btn btn-delete" data-index="${index}">Delete</button>
-        </td>
-      `;
-      tableBody.appendChild(tr);
+          <button class="btn-edit" onclick="editInterview(${index})">Edit</button>
+          <button class="btn-delete" onclick="deleteInterview(${index})">Delete</button>
+        </td>`;
+      tableBody.appendChild(row);
     });
   }
 
-  // Reset form
-  function resetForm() {
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const data = {
+      candidate: document.getElementById('candidate').value.trim(),
+      mobile: document.getElementById('mobile').value.trim(),
+      store: document.getElementById('store').value.trim(),
+      recruiter: document.getElementById('recruiter').value.trim(),
+      date: document.getElementById('date').value,
+      status: document.getElementById('status').value
+    };
+    if (!/^\d{10}$/.test(data.mobile)) {
+      alert('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+    if (editIndex !== null) {
+      interviews[editIndex] = data;
+      editIndex = null;
+    } else {
+      interviews.push(data);
+    }
+    saveData();
     form.reset();
-    submitBtn.textContent = 'Add Interview';
-    editIndex = null;
-  }
+    renderTable();
+  });
 
-  // Populate form for edit
-  function populateForm(index) {
-    const interview = interviews[index];
-    document.getElementById('candidate').value = interview.candidate;
-    document.getElementById('date').value = interview.date;
-    document.getElementById('status').value = interview.status;
-    submitBtn.textContent = 'Update Interview';
+  function editInterview(index) {
+    const item = interviews[index];
+    document.getElementById('candidate').value = item.candidate;
+    document.getElementById('mobile').value = item.mobile;
+    document.getElementById('store').value = item.store;
+    document.getElementById('recruiter').value = item.recruiter;
+    document.getElementById('date').value = item.date;
+    document.getElementById('status').value = item.status;
     editIndex = index;
   }
 
-  // Handle form submit
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const candidate = document.getElementById('candidate').value.trim();
-    const date = document.getElementById('date').value;
-    const status = document.getElementById('status').value;
-
-    if (!candidate || !date || !status) {
-      alert('Please fill all fields');
-      return;
+  function deleteInterview(index) {
+    if (confirm('Are you sure to delete this record?')) {
+      interviews.splice(index, 1);
+      saveData();
+      renderTable();
     }
+  }
 
-    if (editIndex !== null) {
-      // Update existing interview
-      interviews[editIndex] = { candidate, date, status };
-      alert('Interview updated successfully');
-    } else {
-      // Add new interview
-      interviews.push({ candidate, date, status });
-      alert('Interview added successfully');
-    }
-
-    saveData();
-    renderTable(searchInput.value);
-    resetForm();
+  exportBtn.addEventListener('click', () => {
+    const ws = XLSX.utils.json_to_sheet(interviews);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Interviews');
+    XLSX.writeFile(wb, 'interviews.xlsx');
   });
 
-  // Handle edit/delete buttons
-  tableBody.addEventListener('click', (e) => {
-    if (e.target.classList.contains('btn-edit')) {
-      const index = e.target.getAttribute('data-index');
-      populateForm(index);
-    } else if (e.target.classList.contains('btn-delete')) {
-      const index = e.target.getAttribute('data-index');
-      if (confirm('Are you sure you want to delete this interview?')) {
-        interviews.splice(index, 1);
-        saveData();
-        renderTable(searchInput.value);
-        resetForm();
-      }
-    }
-  });
-
-  // Search functionality
-  searchInput.addEventListener('input', () => {
-    renderTable(searchInput.value);
-  });
-
-  // Site name change
-  siteNameSelector.addEventListener('change', () => {
-    siteTitle.textContent = `Interview Tracker - ${siteNameSelector.value}`;
-  });
-
-  // Initialize
-  loadData();
   renderTable();
 </script>
 
